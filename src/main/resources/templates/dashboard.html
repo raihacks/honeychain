@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Honey Chain — Beekeeper Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --ink: #241a09;
+            --ink-soft: #5a4a2f;
+            --gold: #d9a441;
+            --gold-deep: #a8721f;
+            --cream: #fbf3e0;
+            --card: #fffdf8;
+            --line: #e7d9b8;
+            --leaf: #45613a;
+            --leaf-bg: #e7efe0;
+            --rust: #a04a2f;
+            --rust-bg: #f5e4dc;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            background: var(--cream);
+            color: var(--ink);
+            font-family: 'Inter', sans-serif;
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .comb-strip {
+            height: 10px;
+            background-image: linear-gradient(135deg, var(--gold) 25%, transparent 25%),
+                               linear-gradient(225deg, var(--gold) 25%, transparent 25%),
+                               linear-gradient(45deg, var(--gold) 25%, transparent 25%),
+                               linear-gradient(315deg, var(--gold) 25%, transparent 25%);
+            background-position: 10px 0, 10px 0, 0 0, 0 0;
+            background-size: 20px 20px;
+            background-color: var(--gold-deep);
+        }
+
+        .wrap {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 40px 24px 80px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        .brand-name {
+            font-family: 'Fraunces', serif;
+            font-size: 1.15rem;
+            font-weight: 600;
+            color: var(--gold-deep);
+        }
+
+        .brand-tag {
+            font-size: 0.85rem;
+            color: var(--ink-soft);
+        }
+
+        h1 {
+            font-family: 'Fraunces', serif;
+            font-weight: 600;
+            font-size: 1.9rem;
+            margin: 6px 0 32px;
+        }
+
+        .flash {
+            padding: 12px 16px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            margin-bottom: 24px;
+        }
+        .flash.ok { background: var(--leaf-bg); color: var(--leaf); }
+        .flash.bad { background: var(--rust-bg); color: var(--rust); }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+        @media (max-width: 720px) {
+            .grid { grid-template-columns: 1fr; }
+        }
+
+        .card {
+            background: var(--card);
+            border: 1px solid var(--line);
+            border-radius: 6px;
+            padding: 24px;
+        }
+
+        .card h2 {
+            font-family: 'Fraunces', serif;
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin: 0 0 16px;
+        }
+
+        label {
+            display: block;
+            font-size: 0.8rem;
+            color: var(--ink-soft);
+            margin-bottom: 4px;
+            margin-top: 12px;
+        }
+        label:first-of-type { margin-top: 0; }
+
+        input, select {
+            width: 100%;
+            padding: 9px 10px;
+            border: 1px solid var(--line);
+            border-radius: 4px;
+            font-family: inherit;
+            font-size: 0.9rem;
+            background: #fff;
+            color: var(--ink);
+        }
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--gold-deep);
+        }
+
+        button {
+            margin-top: 16px;
+            width: 100%;
+            padding: 10px 14px;
+            border: none;
+            border-radius: 4px;
+            background: var(--gold-deep);
+            color: #fff;
+            font-family: inherit;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+        }
+        button:hover { background: #8f611a; }
+
+        button.small {
+            width: auto;
+            margin-top: 0;
+            padding: 6px 10px;
+            font-size: 0.8rem;
+        }
+
+        .section-title {
+            font-family: 'Fraunces', serif;
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin: 0 0 16px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--card);
+            border: 1px solid var(--line);
+            border-radius: 6px;
+            overflow: hidden;
+            font-size: 0.85rem;
+            margin-bottom: 40px;
+        }
+        th, td {
+            text-align: left;
+            padding: 10px 12px;
+            border-bottom: 1px solid var(--line);
+        }
+        th {
+            color: var(--ink-soft);
+            font-weight: 500;
+            font-size: 0.78rem;
+        }
+        tr:last-child td { border-bottom: none; }
+
+        .status-pill {
+            display: inline-block;
+            padding: 3px 9px;
+            border-radius: 999px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            background: var(--leaf-bg);
+            color: var(--leaf);
+        }
+        .status-pill.created { background: #eee; color: var(--ink-soft); }
+        .status-pill.harvested { background: #f5ecd8; color: var(--gold-deep); }
+
+        .row-actions {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .row-actions form { display: flex; gap: 6px; margin: 0; }
+        .row-actions select { width: auto; padding: 5px 6px; font-size: 0.8rem; }
+
+        a { color: var(--gold-deep); }
+
+        .empty-note {
+            color: var(--ink-soft);
+            font-size: 0.85rem;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+<div class="comb-strip"></div>
+<div class="wrap">
+    <div class="brand">
+        <span class="brand-name">Honey Chain</span>
+        <span class="brand-tag">Beekeeper &amp; cooperative dashboard</span>
+    </div>
+    <h1>Manage beekeepers, hives &amp; batches</h1>
+
+    <div class="flash ok" th:if="${message}" th:text="${message}"></div>
+    <div class="flash bad" th:if="${error}" th:text="${error}"></div>
+
+    <!-- ===================== FORMS ===================== -->
+    <div class="grid">
+        <div class="card">
+            <h2>Register beekeeper</h2>
+            <form th:action="@{/dashboard/beekeepers}" th:object="${beekeeperForm}" method="post">
+                <label>Name</label>
+                <input type="text" th:field="*{name}" required>
+                <label>Phone</label>
+                <input type="text" th:field="*{phone}" required>
+                <label>Village</label>
+                <input type="text" th:field="*{village}">
+                <label>Cluster</label>
+                <input type="text" th:field="*{cluster}" placeholder="e.g. KVIC-North-1">
+                <button type="submit">Register beekeeper</button>
+            </form>
+        </div>
+
+        <div class="card">
+            <h2>Register hive</h2>
+            <form th:action="@{/dashboard/hives}" th:object="${hiveForm}" method="post">
+                <label>Hive code</label>
+                <input type="text" th:field="*{hiveCode}" placeholder="e.g. HIVE-003" required>
+                <label>Beekeeper</label>
+                <select th:field="*{beekeeperId}" required>
+                    <option value="" disabled selected>Select beekeeper</option>
+                    <option th:each="bk : ${beekeepers}" th:value="${bk.id}" th:text="${bk.name} + ' (' + ${bk.village} + ')'"></option>
+                </select>
+                <label>Latitude</label>
+                <input type="number" step="any" th:field="*{latitude}">
+                <label>Longitude</label>
+                <input type="number" step="any" th:field="*{longitude}">
+                <button type="submit">Register hive</button>
+            </form>
+        </div>
+
+        <div class="card">
+            <h2>Create batch</h2>
+            <form th:action="@{/dashboard/batches}" th:object="${batchForm}" method="post">
+                <label>Batch code</label>
+                <input type="text" th:field="*{batchCode}" placeholder="e.g. BATCH-2026-003" required>
+                <label>Hive</label>
+                <select th:field="*{hiveId}" required>
+                    <option value="" disabled selected>Select hive</option>
+                    <option th:each="h : ${hives}" th:value="${h.id}" th:text="${h.hiveCode}"></option>
+                </select>
+                <label>Quantity (kg)</label>
+                <input type="number" step="any" th:field="*{quantityKg}">
+                <button type="submit">Create batch</button>
+            </form>
+        </div>
+
+        <div class="card">
+            <h2>Log sensor reading</h2>
+            <form th:action="@{/dashboard/sensor-readings}" th:object="${sensorForm}" method="post">
+                <label>Hive</label>
+                <select th:field="*{hiveId}" required>
+                    <option value="" disabled selected>Select hive</option>
+                    <option th:each="h : ${hives}" th:value="${h.id}" th:text="${h.hiveCode}"></option>
+                </select>
+                <label>Temperature (°C)</label>
+                <input type="number" step="any" th:field="*{temperatureC}">
+                <label>Humidity (%)</label>
+                <input type="number" step="any" th:field="*{humidityPct}">
+                <label>Hive weight (kg)</label>
+                <input type="number" step="any" th:field="*{weightKg}">
+                <button type="submit">Log reading</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- ===================== BATCHES ===================== -->
+    <p class="section-title">Batches</p>
+    <table th:if="${not #lists.isEmpty(batches)}">
+        <thead>
+        <tr>
+            <th>Batch</th>
+            <th>Hive</th>
+            <th>Status</th>
+            <th>Qty (kg)</th>
+            <th>Advance / view</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="b : ${batches}">
+            <td th:text="${b.batchCode}"></td>
+            <td th:text="${b.hive.hiveCode}"></td>
+            <td>
+                <span class="status-pill"
+                      th:classappend="${b.status.name() == 'CREATED'} ? 'created' : (${b.status.name() == 'HARVESTED'} ? 'harvested' : '')"
+                      th:text="${b.status}"></span>
+            </td>
+            <td th:text="${b.quantityKg} ?: '—'"></td>
+            <td>
+                <div class="row-actions">
+                    <form th:action="@{'/dashboard/batches/' + ${b.id} + '/advance'}" method="post">
+                        <select name="newStatus">
+                            <option th:each="s : ${batchStatuses}" th:value="${s}" th:text="${s}"></option>
+                        </select>
+                        <button class="small" type="submit">Advance</button>
+                    </form>
+                    <a th:href="@{'/verify/' + ${b.id}}" target="_blank">Verify page</a>
+                    <a th:href="@{'/api/batches/' + ${b.id} + '/qr'}" target="_blank">QR</a>
+                </div>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <p class="empty-note" th:if="${#lists.isEmpty(batches)}">No batches yet — create one above.</p>
+
+    <!-- ===================== HIVES ===================== -->
+    <p class="section-title">Hives</p>
+    <table th:if="${not #lists.isEmpty(hives)}">
+        <thead>
+        <tr>
+            <th>Hive code</th>
+            <th>Beekeeper</th>
+            <th>Location</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="h : ${hives}">
+            <td th:text="${h.hiveCode}"></td>
+            <td th:text="${h.beekeeper.name}"></td>
+            <td th:text="${h.latitude != null and h.longitude != null} ? (${h.latitude} + ', ' + ${h.longitude}) : '—'"></td>
+        </tr>
+        </tbody>
+    </table>
+    <p class="empty-note" th:if="${#lists.isEmpty(hives)}">No hives yet — register one above.</p>
+
+    <!-- ===================== BEEKEEPERS ===================== -->
+    <p class="section-title">Beekeepers</p>
+    <table th:if="${not #lists.isEmpty(beekeepers)}">
+        <thead>
+        <tr>
+            <th>Name</th>
+            <th>Phone</th>
+            <th>Village</th>
+            <th>Cluster</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="bk : ${beekeepers}">
+            <td th:text="${bk.name}"></td>
+            <td th:text="${bk.phone}"></td>
+            <td th:text="${bk.village} ?: '—'"></td>
+            <td th:text="${bk.cluster} ?: '—'"></td>
+        </tr>
+        </tbody>
+    </table>
+    <p class="empty-note" th:if="${#lists.isEmpty(beekeepers)}">No beekeepers yet — register one above.</p>
+</div>
+</body>
+</html>

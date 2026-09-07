@@ -17,8 +17,7 @@ import java.util.List;
 @Service
 public class BatchService {
 
-    // Defines the only legal forward transitions. CREATED -> HARVESTED ->
-    // QUALITY_CHECKED -> PACKAGED. No skipping stages, no going backwards.
+
     private static final List<BatchStatus> ORDER = List.of(
             BatchStatus.CREATED,
             BatchStatus.HARVESTED,
@@ -59,18 +58,11 @@ public class BatchService {
         batch.setStatus(BatchStatus.CREATED);
         batch = batchRepository.save(batch);
 
-        // Genesis link in this batch's chain, recording the CREATED state.
         appendLedgerRecord(batch, BatchStatus.CREATED);
 
         return batch;
     }
 
-    /**
-     * Advances a batch to newStatus, appending a new hash-chained ledger
-     * record. Only the next status in ORDER is accepted - no skipping and
-     * no moving backwards, so the chain always reflects a real, in-order
-     * production history.
-     */
     @Transactional
     public Batch transitionStatus(Long batchId, BatchStatus newStatus) {
         Batch batch = batchRepository.findById(batchId)
@@ -95,12 +87,6 @@ public class BatchService {
         return batch;
     }
 
-    /**
-     * Builds the payload for the given status, computes
-     * SHA-256(previousHash + json(payload)), and persists the new
-     * LedgerRecord. previousHash is the batch's latestHash, or the fixed
-     * genesis hash if this is the first record in the chain.
-     */
     private LedgerRecord appendLedgerRecord(Batch batch, BatchStatus status) {
         int nextSeq = ledgerRecordRepository.findTopByBatchIdOrderBySequenceNoDesc(batch.getId())
                 .map(r -> r.getSequenceNo() + 1)
@@ -144,15 +130,6 @@ public class BatchService {
         return record;
     }
 
-    /**
-     * Recomputes every hash in a batch's chain from its stored payload and
-     * confirms:
-     *   1) each record's previousHash matches the prior record's currentHash
-     *      (or GENESIS_HASH for the first record)
-     *   2) SHA-256(previousHash + payloadJson) still equals the stored
-     *      currentHash (i.e. the payload/hash pair hasn't been tampered with)
-     *   3) sequence numbers are contiguous starting at 1
-     */
     @Transactional(readOnly = true)
     public ChainVerificationResult verifyChain(Long batchId) {
         if (!batchRepository.existsById(batchId)) {

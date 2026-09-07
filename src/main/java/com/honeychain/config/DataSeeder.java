@@ -13,16 +13,6 @@ import com.honeychain.service.SensorReadingService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
-/**
- * Seeds a handful of realistic sample records on startup so the API,
- * the QR codes, and the /verify page all have something to show without
- * manual setup.
- *
- * Deliberately goes through the real services (not raw SQL / data.sql) so
- * every Batch created here gets a properly computed hash chain, exactly
- * as it would from real API calls. Only runs when the database is empty,
- * so it's safe to leave in place across restarts.
- */
 @Component
 public class DataSeeder implements CommandLineRunner {
 
@@ -47,10 +37,9 @@ public class DataSeeder implements CommandLineRunner {
     @Override
     public void run(String... args) {
         if (batchRepository.count() > 0) {
-            return; // already seeded (or real data exists) - don't touch it
+            return;
         }
 
-        // --- Beekeeper 1: Ramesh, two hives, a batch that's gone all the way to PACKAGED ---
         Beekeeper ramesh = beekeeperService.register(beekeeper(
                 "Ramesh Kumar", "9876543210", "Sonipat", "KVIC-North-1"));
 
@@ -59,19 +48,17 @@ public class DataSeeder implements CommandLineRunner {
 
         sensorReadingService.add(reading(rameshHive1.getId(), 34.2, 55.0, 41.3, 0.8));
         sensorReadingService.add(reading(rameshHive1.getId(), 33.8, 57.5, 42.1, 0.7));
-        sensorReadingService.add(reading(rameshHive2.getId(), 35.6, 62.0, 38.4, 1.4)); // slightly outside normal range
+        sensorReadingService.add(reading(rameshHive2.getId(), 35.6, 62.0, 38.4, 1.4)); 
 
         Batch batch1 = batchService.createBatch(createBatch("BATCH-2026-001", rameshHive1.getId(), 12.5));
         batchService.transitionStatus(batch1.getId(), BatchStatus.HARVESTED);
         batchService.transitionStatus(batch1.getId(), BatchStatus.QUALITY_CHECKED);
         batchService.transitionStatus(batch1.getId(), BatchStatus.PACKAGED);
 
-        // --- Same beekeeper, second hive, a batch mid-way through (QUALITY_CHECKED) ---
         Batch batch2 = batchService.createBatch(createBatch("BATCH-2026-002", rameshHive2.getId(), 9.0));
         batchService.transitionStatus(batch2.getId(), BatchStatus.HARVESTED);
         batchService.transitionStatus(batch2.getId(), BatchStatus.QUALITY_CHECKED);
 
-        // --- Beekeeper 2: Sunita, one hive, a batch just created (nothing harvested yet) ---
         Beekeeper sunita = beekeeperService.register(beekeeper(
                 "Sunita Devi", "9123456780", "Panipat", "KVIC-North-1"));
 

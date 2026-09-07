@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${view.found} ? 'Batch ' + ${view.batchCode} + ' — Honey Chain' : 'Batch not found — Honey Chain'">Honey Chain</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --ink: #241a09;
+            --ink-soft: #5a4a2f;
+            --gold: #d9a441;
+            --gold-deep: #a8721f;
+            --cream: #fbf3e0;
+            --card: #fffdf8;
+            --line: #e7d9b8;
+            --leaf: #45613a;
+            --leaf-bg: #e7efe0;
+            --rust: #a04a2f;
+            --rust-bg: #f5e4dc;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            background: var(--cream);
+            color: var(--ink);
+            font-family: 'Inter', sans-serif;
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .comb-strip {
+            height: 10px;
+            background-image: linear-gradient(135deg, var(--gold) 25%, transparent 25%),
+                               linear-gradient(225deg, var(--gold) 25%, transparent 25%),
+                               linear-gradient(45deg, var(--gold) 25%, transparent 25%),
+                               linear-gradient(315deg, var(--gold) 25%, transparent 25%);
+            background-position: 10px 0, 10px 0, 0 0, 0 0;
+            background-size: 20px 20px;
+            background-color: var(--gold-deep);
+        }
+
+        .wrap {
+            max-width: 560px;
+            margin: 0 auto;
+            padding: 40px 24px 64px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            margin-bottom: 28px;
+        }
+
+        .brand-name {
+            font-family: 'Fraunces', serif;
+            font-size: 1.15rem;
+            font-weight: 600;
+            color: var(--gold-deep);
+            letter-spacing: 0.01em;
+        }
+
+        .batch-code {
+            font-size: 0.85rem;
+            color: var(--ink-soft);
+        }
+
+        .card {
+            background: var(--card);
+            border: 1px solid var(--line);
+            border-radius: 6px;
+            padding: 32px 28px;
+        }
+
+        h1 {
+            font-family: 'Fraunces', serif;
+            font-weight: 600;
+            font-size: 1.7rem;
+            line-height: 1.25;
+            margin: 0 0 6px;
+        }
+
+        .subhead {
+            color: var(--ink-soft);
+            font-size: 0.95rem;
+            margin: 0 0 24px;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 7px 14px;
+            border-radius: 999px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            margin-bottom: 28px;
+        }
+        .badge.ok { background: var(--leaf-bg); color: var(--leaf); }
+        .badge.bad { background: var(--rust-bg); color: var(--rust); }
+        .badge-dot { width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+
+        .facts {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            row-gap: 12px;
+            column-gap: 20px;
+            font-size: 0.95rem;
+            margin-bottom: 28px;
+        }
+        .facts dt { color: var(--ink-soft); }
+        .facts dd { margin: 0; text-align: right; font-weight: 500; }
+
+        .section-title {
+            font-family: 'Fraunces', serif;
+            font-size: 1.05rem;
+            font-weight: 600;
+            margin: 0 0 4px;
+        }
+
+        .section-note {
+            color: var(--ink-soft);
+            font-size: 0.85rem;
+            margin: 0 0 16px;
+        }
+
+        .divider {
+            border: none;
+            border-top: 1px solid var(--line);
+            margin: 28px 0;
+        }
+
+        .sensor-row {
+            display: flex;
+            gap: 24px;
+            flex-wrap: wrap;
+            margin-top: 14px;
+        }
+        .sensor-stat {
+            min-width: 84px;
+        }
+        .sensor-stat .value {
+            font-family: 'Fraunces', serif;
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+        .sensor-stat .label {
+            font-size: 0.78rem;
+            color: var(--ink-soft);
+        }
+
+        .trail {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            position: relative;
+        }
+        .trail::before {
+            content: "";
+            position: absolute;
+            left: 5px;
+            top: 8px;
+            bottom: 8px;
+            width: 1px;
+            background: var(--line);
+        }
+        .trail-item {
+            position: relative;
+            padding-left: 26px;
+            padding-bottom: 20px;
+        }
+        .trail-item:last-child { padding-bottom: 0; }
+        .trail-item::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 4px;
+            width: 11px;
+            height: 11px;
+            border-radius: 50%;
+            background: var(--card);
+            border: 2px solid var(--gold-deep);
+        }
+        .trail-status {
+            font-weight: 600;
+            font-size: 0.92rem;
+        }
+        .trail-meta {
+            font-size: 0.8rem;
+            color: var(--ink-soft);
+            margin-top: 2px;
+        }
+        .trail-hash {
+            font-family: 'SFMono-Regular', Consolas, monospace;
+            font-size: 0.78rem;
+            color: var(--ink-soft);
+            margin-top: 4px;
+            word-break: break-all;
+        }
+
+        .issues {
+            margin-top: 16px;
+            padding: 14px 16px;
+            background: var(--rust-bg);
+            border-radius: 6px;
+            font-size: 0.85rem;
+            color: var(--rust);
+        }
+        .issues ul { margin: 6px 0 0; padding-left: 18px; }
+
+        .footer-note {
+            text-align: center;
+            font-size: 0.8rem;
+            color: var(--ink-soft);
+            margin-top: 24px;
+        }
+
+        .not-found h1 { margin-bottom: 14px; }
+        .not-found p { color: var(--ink-soft); }
+    </style>
+</head>
+<body>
+<div class="comb-strip"></div>
+<div class="wrap">
+    <div class="brand">
+        <span class="brand-name">Honey Chain</span>
+        <span class="batch-code" th:if="${view.found}" th:text="${view.batchCode}">BATCH-0000</span>
+    </div>
+
+    <div class="card" th:if="${view.found}">
+        <span class="badge" th:classappend="${view.chainValid} ? 'ok' : 'bad'">
+            <span class="badge-dot"></span>
+            <span th:text="${view.chainValid} ? 'Record verified' : 'Record failed verification'">Record verified</span>
+        </span>
+
+        <h1 th:text="'Honey from ' + ${view.beekeeperName}">Honey from Ramesh Kumar</h1>
+        <p class="subhead" th:text="'Traced from hive ' + ${view.hiveCode} + ' to your jar'">Traced from hive to jar</p>
+
+        <dl class="facts">
+            <dt>Beekeeper</dt>
+            <dd th:text="${view.beekeeperName}">Ramesh Kumar</dd>
+
+            <dt>Village</dt>
+            <dd th:text="${view.beekeeperVillage} ?: '—'">Sonipat</dd>
+
+            <dt>Hive location</dt>
+            <dd th:text="${view.hiveLocation}">28.99, 77.01</dd>
+
+            <dt>Harvest date</dt>
+            <dd th:text="${view.harvestDate}">Not yet harvested</dd>
+
+            <dt>Batch status</dt>
+            <dd th:text="${view.status}">CREATED</dd>
+
+            <dt th:if="${view.quantityKg}">Quantity</dt>
+            <dd th:if="${view.quantityKg}" th:text="${view.quantityKg} + ' kg'">12.5 kg</dd>
+        </dl>
+
+        <hr class="divider">
+
+        <p class="section-title">Hive health</p>
+        <p class="section-note">Most recent sensor reading from this hive</p>
+        <span class="badge" th:classappend="${view.sensorStatus == 'Healthy'} ? 'ok' : (${view.sensorStatus == 'Needs Attention'} ? 'bad' : '')"
+              th:if="${view.sensorStatus != 'No sensor data yet'}">
+            <span class="badge-dot"></span>
+            <span th:text="${view.sensorStatus}">Healthy</span>
+        </span>
+        <p th:if="${view.sensorStatus == 'No sensor data yet'}" class="section-note" style="margin:0;">No sensor data yet</p>
+
+        <div class="sensor-row" th:if="${view.lastReadingAt}">
+            <div class="sensor-stat" th:if="${view.lastTemperatureC}">
+                <div class="value" th:text="${view.lastTemperatureC} + '°C'">34.2°C</div>
+                <div class="label">Temperature</div>
+            </div>
+            <div class="sensor-stat" th:if="${view.lastHumidityPct}">
+                <div class="value" th:text="${view.lastHumidityPct} + '%'">55%</div>
+                <div class="label">Humidity</div>
+            </div>
+            <div class="sensor-stat" th:if="${view.lastWeightKg}">
+                <div class="value" th:text="${view.lastWeightKg} + 'kg'">41.3kg</div>
+                <div class="label">Hive weight</div>
+            </div>
+        </div>
+
+        <hr class="divider">
+
+        <p class="section-title">Chain of custody</p>
+        <p class="section-note">Each stage is sealed with a cryptographic hash linked to the one before it</p>
+
+        <ul class="trail">
+            <li class="trail-item" th:each="entry : ${view.ledgerTrail}">
+                <div class="trail-status" th:text="${entry.status}">CREATED</div>
+                <div class="trail-meta" th:text="${entry.timestamp}">2026-01-10T08:00:00Z</div>
+                <div class="trail-hash" th:text="${entry.shortHash}">3f9a2c1d8e7b…4a1f9c</div>
+            </li>
+        </ul>
+
+        <div class="issues" th:if="${!view.chainValid}">
+            This batch's record did not pass verification.
+            <ul>
+                <li th:each="issue : ${view.chainIssues}" th:text="${issue}"></li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="card not-found" th:unless="${view.found}">
+        <h1>We couldn't find this batch</h1>
+        <p>The code on this label doesn't match any batch in our records. If you scanned this from a jar of honey, please contact the seller — this may indicate a labeling error or a counterfeit product.</p>
+    </div>
+
+    <p class="footer-note">Honey Chain · Traceability for KVIC-affiliated beekeeping cooperatives</p>
+</div>
+</body>
+</html>

@@ -15,11 +15,6 @@ import java.io.IOException;
 import java.util.EnumMap;
 import java.util.Map;
 
-/**
- * Generates a QR code PNG that encodes {app.base-url}/verify/{batchId} -
- * scanning it takes a consumer straight to that batch's public
- * verification page.
- */
 @Service
 public class QrCodeService {
 

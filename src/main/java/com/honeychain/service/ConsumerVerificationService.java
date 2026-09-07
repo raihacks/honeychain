@@ -17,18 +17,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-/**
- * Builds the read-only view a consumer sees after scanning a batch's QR
- * code: who made it, where, when it was harvested, whether the hive looked
- * healthy at the time, and the hash trail proving the record hasn't been
- * altered since.
- */
+
 @Service
 public class ConsumerVerificationService {
 
-    // Simple, transparent thresholds for a "healthy hive" reading. Not a
-    // real diagnostic model - just enough to flag obviously abnormal
-    // conditions until the AI health-detection service exists.
     private static final double TEMP_MIN = 30.0;
     private static final double TEMP_MAX = 38.0;
     private static final double HUMIDITY_MIN = 40.0;

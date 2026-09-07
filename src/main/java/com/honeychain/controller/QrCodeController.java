@@ -20,7 +20,6 @@ public class QrCodeController {
         this.batchRepository = batchRepository;
     }
 
-    // GET /api/batches/3/qr?size=300 -> PNG image encoding {base-url}/verify/3
     @GetMapping(value = "/{batchId}/qr", produces = MediaType.IMAGE_PNG_VALUE)
     public ResponseEntity<byte[]> getQr(@PathVariable Long batchId,
                                          @RequestParam(defaultValue = "300") int size) {
@@ -36,7 +35,6 @@ public class QrCodeController {
                 .body(png);
     }
 
-    // GET /api/batches/3/qr-url -> plain text of the URL encoded in the QR, handy for debugging
     @GetMapping(value = "/{batchId}/qr-url", produces = MediaType.TEXT_PLAIN_VALUE)
     public ResponseEntity<String> getQrUrl(@PathVariable Long batchId) {
         if (!batchRepository.existsById(batchId)) {

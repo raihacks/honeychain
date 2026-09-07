@@ -19,13 +19,11 @@ public class SensorReading {
     private Double humidityPct;
     private Double weightKg;
 
-    // Optional: sound/vibration index used later for AI disease/health detection
     private Double soundIndex;
 
     @Column(updatable = false)
     private Instant recordedAt = Instant.now();
 
-    // --- getters / setters ---
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
