@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${detail.found} ? 'Audit — ' + ${detail.batchCode} : 'Batch not found'">Honey Chain — Admin</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --ink: #241a09;
+            --ink-soft: #5a4a2f;
+            --gold: #d9a441;
+            --gold-deep: #a8721f;
+            --cream: #fbf3e0;
+            --card: #fffdf8;
+            --line: #e7d9b8;
+            --leaf: #45613a;
+            --leaf-bg: #e7efe0;
+            --rust: #a04a2f;
+            --rust-bg: #f5e4dc;
+        }
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            background: var(--cream);
+            color: var(--ink);
+            font-family: 'Inter', sans-serif;
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+        }
+        .comb-strip {
+            height: 10px;
+            background-image: linear-gradient(135deg, var(--gold) 25%, transparent 25%),
+                               linear-gradient(225deg, var(--gold) 25%, transparent 25%),
+                               linear-gradient(45deg, var(--gold) 25%, transparent 25%),
+                               linear-gradient(315deg, var(--gold) 25%, transparent 25%);
+            background-position: 10px 0, 10px 0, 0 0, 0 0;
+            background-size: 20px 20px;
+            background-color: var(--gold-deep);
+        }
+        .wrap { max-width: 860px; margin: 0 auto; padding: 40px 24px 80px; }
+        .brand { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 8px; }
+        .brand-name { font-family: 'Fraunces', serif; font-size: 1.15rem; font-weight: 600; color: var(--gold-deep); }
+        a.back { font-size: 0.85rem; color: var(--gold-deep); }
+        h1 { font-family: 'Fraunces', serif; font-weight: 600; font-size: 1.8rem; margin: 6px 0 6px; }
+        .subhead { color: var(--ink-soft); font-size: 0.9rem; margin: 0 0 24px; }
+
+        .badge {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 7px 14px; border-radius: 999px; font-size: 0.85rem; font-weight: 500;
+            margin-bottom: 24px;
+        }
+        .badge.ok { background: var(--leaf-bg); color: var(--leaf); }
+        .badge.bad { background: var(--rust-bg); color: var(--rust); }
+        .badge-dot { width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+
+        .issues {
+            padding: 14px 16px;
+            background: var(--rust-bg);
+            border-radius: 6px;
+            font-size: 0.85rem;
+            color: var(--rust);
+            margin-bottom: 24px;
+        }
+        .issues ul { margin: 6px 0 0; padding-left: 18px; }
+
+        .record-card {
+            background: var(--card);
+            border: 1px solid var(--line);
+            border-radius: 6px;
+            padding: 20px;
+            margin-bottom: 16px;
+        }
+        .record-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 12px;
+        }
+        .record-status { font-family: 'Fraunces', serif; font-weight: 600; font-size: 1.05rem; }
+        .record-time { font-size: 0.8rem; color: var(--ink-soft); }
+
+        .hash-row { margin-bottom: 10px; }
+        .hash-label { font-size: 0.75rem; color: var(--ink-soft); margin-bottom: 2px; }
+        .hash-value {
+            font-family: 'SFMono-Regular', Consolas, monospace;
+            font-size: 0.78rem;
+            word-break: break-all;
+            background: #fbf6ea;
+            border: 1px solid var(--line);
+            border-radius: 4px;
+            padding: 6px 8px;
+        }
+
+        details { margin-top: 8px; }
+        summary {
+            cursor: pointer;
+            font-size: 0.8rem;
+            color: var(--gold-deep);
+        }
+        pre {
+            font-family: 'SFMono-Regular', Consolas, monospace;
+            font-size: 0.78rem;
+            background: #fbf6ea;
+            border: 1px solid var(--line);
+            border-radius: 4px;
+            padding: 10px;
+            overflow-x: auto;
+            margin-top: 8px;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+
+        .not-found p { color: var(--ink-soft); }
+    </style>
+</head>
+<body>
+<div class="comb-strip"></div>
+<div class="wrap">
+    <div class="brand">
+        <span class="brand-name">Honey Chain</span>
+        <a class="back" th:href="@{/admin}">&larr; Back to overview</a>
+    </div>
+
+    <div th:if="${detail.found}">
+        <h1 th:text="'Audit trail — ' + ${detail.batchCode}">Audit trail — BATCH-2026-001</h1>
+        <p class="subhead" th:text="${detail.beekeeperName} + ' · Hive ' + ${detail.hiveCode} + ' · Status: ' + ${detail.status}">
+            Ramesh Kumar · Hive HIVE-001 · Status: PACKAGED
+        </p>
+
+        <span class="badge" th:classappend="${detail.chainValid} ? 'ok' : 'bad'">
+            <span class="badge-dot"></span>
+            <span th:text="${detail.chainValid} ? 'Chain verified — no tampering detected' : 'Chain verification failed'"></span>
+        </span>
+
+        <div class="issues" th:if="${!detail.chainValid}">
+            <ul>
+                <li th:each="issue : ${detail.issues}" th:text="${issue}"></li>
+            </ul>
+        </div>
+
+        <div class="record-card" th:each="r : ${detail.records}">
+            <div class="record-head">
+                <span class="record-status" th:text="'#' + ${r.sequenceNo} + ' — ' + ${r.status}">#1 — CREATED</span>
+                <span class="record-time" th:text="${r.createdAt}">2026-01-10T08:00:00Z</span>
+            </div>
+
+            <div class="hash-row">
+                <div class="hash-label">Previous hash</div>
+                <div class="hash-value" th:text="${r.previousHash}">0000...0000</div>
+            </div>
+            <div class="hash-row">
+                <div class="hash-label">Current hash</div>
+                <div class="hash-value" th:text="${r.currentHash}">3f9a...4a1f</div>
+            </div>
+
+            <details>
+                <summary>View raw payload (what was hashed)</summary>
+                <pre th:text="${r.payloadJson}"></pre>
+            </details>
+        </div>
+    </div>
+
+    <div class="not-found" th:unless="${detail.found}">
+        <h1>Batch not found</h1>
+        <p>No batch exists with that ID.</p>
+    </div>
+</div>
+</body>
+</html>
