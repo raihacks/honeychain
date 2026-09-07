@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Honey Chain — Admin</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --ink: #241a09;
+            --ink-soft: #5a4a2f;
+            --gold: #d9a441;
+            --gold-deep: #a8721f;
+            --cream: #fbf3e0;
+            --card: #fffdf8;
+            --line: #e7d9b8;
+            --leaf: #45613a;
+            --leaf-bg: #e7efe0;
+            --rust: #a04a2f;
+            --rust-bg: #f5e4dc;
+        }
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            background: var(--cream);
+            color: var(--ink);
+            font-family: 'Inter', sans-serif;
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+        }
+        .comb-strip {
+            height: 10px;
+            background-image: linear-gradient(135deg, var(--gold) 25%, transparent 25%),
+                               linear-gradient(225deg, var(--gold) 25%, transparent 25%),
+                               linear-gradient(45deg, var(--gold) 25%, transparent 25%),
+                               linear-gradient(315deg, var(--gold) 25%, transparent 25%);
+            background-position: 10px 0, 10px 0, 0 0, 0 0;
+            background-size: 20px 20px;
+            background-color: var(--gold-deep);
+        }
+        .wrap { max-width: 1040px; margin: 0 auto; padding: 40px 24px 80px; }
+        .brand { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 8px; }
+        .brand-name { font-family: 'Fraunces', serif; font-size: 1.15rem; font-weight: 600; color: var(--gold-deep); }
+        .brand-tag { font-size: 0.85rem; color: var(--ink-soft); }
+        h1 { font-family: 'Fraunces', serif; font-weight: 600; font-size: 1.9rem; margin: 6px 0 32px; }
+
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        @media (max-width: 760px) { .stat-grid { grid-template-columns: repeat(2, 1fr); } }
+        .stat-card {
+            background: var(--card);
+            border: 1px solid var(--line);
+            border-radius: 6px;
+            padding: 18px 20px;
+        }
+        .stat-value { font-family: 'Fraunces', serif; font-size: 1.7rem; font-weight: 600; }
+        .stat-label { font-size: 0.8rem; color: var(--ink-soft); margin-top: 2px; }
+
+        .banner {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 14px 18px;
+            border-radius: 6px;
+            font-size: 0.92rem;
+            font-weight: 500;
+            margin-bottom: 28px;
+        }
+        .banner.ok { background: var(--leaf-bg); color: var(--leaf); }
+        .banner.bad { background: var(--rust-bg); color: var(--rust); }
+        .banner-dot { width: 8px; height: 8px; border-radius: 50%; background: currentColor; flex-shrink: 0; }
+
+        .pill-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 32px; }
+        .status-pill {
+            padding: 5px 12px;
+            border-radius: 999px;
+            font-size: 0.8rem;
+            background: #fff;
+            border: 1px solid var(--line);
+            color: var(--ink-soft);
+        }
+        .status-pill strong { color: var(--ink); }
+
+        .section-title { font-family: 'Fraunces', serif; font-size: 1.3rem; font-weight: 600; margin: 0 0 16px; }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--card);
+            border: 1px solid var(--line);
+            border-radius: 6px;
+            overflow: hidden;
+            font-size: 0.85rem;
+        }
+        th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--line); }
+        th { color: var(--ink-soft); font-weight: 500; font-size: 0.78rem; }
+        tr:last-child td { border-bottom: none; }
+
+        .badge {
+            display: inline-flex; align-items: center; gap: 6px;
+            padding: 3px 10px; border-radius: 999px; font-size: 0.78rem; font-weight: 500;
+        }
+        .badge.ok { background: var(--leaf-bg); color: var(--leaf); }
+        .badge.bad { background: var(--rust-bg); color: var(--rust); }
+        .badge-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+
+        a.audit-link { color: var(--gold-deep); font-size: 0.85rem; }
+        .empty-note { color: var(--ink-soft); font-size: 0.85rem; font-style: italic; }
+    </style>
+</head>
+<body>
+<div class="comb-strip"></div>
+<div class="wrap">
+    <div class="brand">
+        <span class="brand-name">Honey Chain</span>
+        <span class="brand-tag">Admin overview</span>
+    </div>
+    <h1>System overview</h1>
+
+    <div class="stat-grid">
+        <div class="stat-card">
+            <div class="stat-value" th:text="${overview.totalBeekeepers}">0</div>
+            <div class="stat-label">Beekeepers</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value" th:text="${overview.totalHives}">0</div>
+            <div class="stat-label">Hives</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value" th:text="${overview.totalBatches}">0</div>
+            <div class="stat-label">Batches</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value" th:text="${overview.totalSensorReadings}">0</div>
+            <div class="stat-label">Sensor readings</div>
+        </div>
+    </div>
+
+    <div class="banner" th:classappend="${overview.invalidBatchCount == 0} ? 'ok' : 'bad'">
+        <span class="banner-dot"></span>
+        <span th:if="${overview.invalidBatchCount == 0}">
+            All <span th:text="${overview.totalBatches}">0</span> batch ledgers pass hash-chain verification.
+        </span>
+        <span th:if="${overview.invalidBatchCount > 0}">
+            <span th:text="${overview.invalidBatchCount}">0</span> of
+            <span th:text="${overview.totalBatches}">0</span> batch ledgers failed verification — see flagged rows below.
+        </span>
+    </div>
+
+    <div class="pill-row">
+        <span class="status-pill" th:each="entry : ${overview.statusCounts}">
+            <strong th:text="${entry.value}">0</strong> <span th:text="${entry.key}">CREATED</span>
+        </span>
+    </div>
+
+    <p class="section-title">Batches</p>
+    <table th:if="${not #lists.isEmpty(overview.batches)}">
+        <thead>
+        <tr>
+            <th>Batch</th>
+            <th>Beekeeper</th>
+            <th>Hive</th>
+            <th>Status</th>
+            <th>Chain integrity</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="row : ${overview.batches}">
+            <td th:text="${row.batchCode}"></td>
+            <td th:text="${row.beekeeperName}"></td>
+            <td th:text="${row.hiveCode}"></td>
+            <td th:text="${row.status}"></td>
+            <td>
+                <span class="badge" th:classappend="${row.chainValid} ? 'ok' : 'bad'">
+                    <span class="badge-dot"></span>
+                    <span th:if="${row.chainValid}" th:text="'Verified (' + ${row.recordsChecked} + ' records)'">Verified</span>
+                    <span th:unless="${row.chainValid}" th:text="${row.issuesCount} + ' issue(s) found'">Issues found</span>
+                </span>
+            </td>
+            <td><a class="audit-link" th:href="@{'/admin/batches/' + ${row.batchId}}">View audit trail</a></td>
+        </tr>
+        </tbody>
+    </table>
+    <p class="empty-note" th:if="${#lists.isEmpty(overview.batches)}">No batches in the system yet.</p>
+</div>
+</body>
+</html>

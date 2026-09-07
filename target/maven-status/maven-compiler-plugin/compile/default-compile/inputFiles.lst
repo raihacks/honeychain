@@ -1,6 +1,7 @@
 /home/anya/Downloads/honeychain/src/main/java/com/honeychain/HoneychainApplication.java
 /home/anya/Downloads/honeychain/src/main/java/com/honeychain/config/DataSeeder.java
 /home/anya/Downloads/honeychain/src/main/java/com/honeychain/config/GlobalExceptionHandler.java
+/home/anya/Downloads/honeychain/src/main/java/com/honeychain/controller/AdminController.java
 /home/anya/Downloads/honeychain/src/main/java/com/honeychain/controller/BatchController.java
 /home/anya/Downloads/honeychain/src/main/java/com/honeychain/controller/BeekeeperController.java
 /home/anya/Downloads/honeychain/src/main/java/com/honeychain/controller/BeekeeperDashboardController.java
@@ -9,10 +10,14 @@
 /home/anya/Downloads/honeychain/src/main/java/com/honeychain/controller/SensorReadingController.java
 /home/anya/Downloads/honeychain/src/main/java/com/honeychain/controller/VerificationPageController.java
 /home/anya/Downloads/honeychain/src/main/java/com/honeychain/dto/AddSensorReadingRequest.java
+/home/anya/Downloads/honeychain/src/main/java/com/honeychain/dto/AdminBatchDetail.java
+/home/anya/Downloads/honeychain/src/main/java/com/honeychain/dto/AdminBatchRow.java
+/home/anya/Downloads/honeychain/src/main/java/com/honeychain/dto/AdminOverview.java
 /home/anya/Downloads/honeychain/src/main/java/com/honeychain/dto/ChainVerificationResult.java
 /home/anya/Downloads/honeychain/src/main/java/com/honeychain/dto/ConsumerVerificationView.java
 /home/anya/Downloads/honeychain/src/main/java/com/honeychain/dto/CreateBatchRequest.java
 /home/anya/Downloads/honeychain/src/main/java/com/honeychain/dto/LedgerPayload.java
+/home/anya/Downloads/honeychain/src/main/java/com/honeychain/dto/LedgerRecordDetail.java
 /home/anya/Downloads/honeychain/src/main/java/com/honeychain/dto/LedgerTrailEntry.java
 /home/anya/Downloads/honeychain/src/main/java/com/honeychain/dto/RegisterBeekeeperRequest.java
 /home/anya/Downloads/honeychain/src/main/java/com/honeychain/dto/RegisterHiveRequest.java
@@ -28,6 +33,7 @@
 /home/anya/Downloads/honeychain/src/main/java/com/honeychain/repository/HiveRepository.java
 /home/anya/Downloads/honeychain/src/main/java/com/honeychain/repository/LedgerRecordRepository.java
 /home/anya/Downloads/honeychain/src/main/java/com/honeychain/repository/SensorReadingRepository.java
+/home/anya/Downloads/honeychain/src/main/java/com/honeychain/service/AdminService.java
 /home/anya/Downloads/honeychain/src/main/java/com/honeychain/service/BatchService.java
 /home/anya/Downloads/honeychain/src/main/java/com/honeychain/service/BeekeeperService.java
 /home/anya/Downloads/honeychain/src/main/java/com/honeychain/service/ConsumerVerificationService.java
